@@ -13,7 +13,7 @@
     <artifactId>backend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>backend</name>
-    <description>Sistema de Gestão para Pequenos Negócios</description>
+    <description>Sistema de GestÃ£o para Pequenos NegÃ³cios</description>
     <properties>
         <java.version>17</java.version>
     </properties>
@@ -76,7 +76,11 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-    </dependencies>
+    		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-mail</artifactId>
+		</dependency>
+	</dependencies>
     <build>
         <plugins>
             <plugin>

@@ -105,7 +105,7 @@ export function Login() {
             
             <div className="text-center mt-6">
               <Link to="/register" className="text-blue-600 dark:text-blue-400 hover:underline font-medium block pt-2 border-t border-slate-100 dark:border-slate-700">
-                Ainda não tem uma conta? Cadastre seu negócio
+                Ainda nÃ£o tem uma conta? Cadastre seu negÃ³cio
               </Link>
             </div>
           </form>
