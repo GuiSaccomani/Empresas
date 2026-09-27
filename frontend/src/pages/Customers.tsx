@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Users, Plus, Mail, Phone, Search, Loader2, X, CheckCircle2 } from 'lucide-react';
-import { getCustomers, createCustomer, Customer } from '../services/customers';
+import { Users, Plus, Mail, Phone, Loader2, X, CheckCircle2 , Edit2, Trash2} from 'lucide-react';
+import { getCustomers, createCustomer, updateCustomer, deleteCustomer } from '../services/customers';
+import type { Customer } from '../services/customers';
 import { formatPhone } from '../utils/masks';
 
 export function Customers() {
@@ -9,6 +10,7 @@ export function Customers() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
+  const [editingId, setEditingId] = useState<string | null>(null);
 
   // Form
   const [formData, setFormData] = useState({ name: '', email: '', phone: '' });
@@ -37,7 +39,7 @@ export function Customers() {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleCreateCustomer = async (e: React.FormEvent) => {
+  const handleSubmitCustomer = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
@@ -45,22 +47,52 @@ export function Customers() {
         ...formData,
         phone: formData.phone.replace(/\D/g, '')
       };
-      await createCustomer(payload);
       
-      // Sucesso
-      setToastMessage('Cliente cadastrado com sucesso!');
-      setIsModalOpen(false);
-      setFormData({ name: '', email: '', phone: '' });
-      fetchCustomers();
+      if (editingId) {
+        await updateCustomer(editingId, payload);
+        setToastMessage('Cliente atualizado com sucesso!');
+      } else {
+        await createCustomer(payload);
+        setToastMessage('Cliente cadastrado com sucesso!');
+      }
       
       setTimeout(() => setToastMessage(''), 3000);
-    } catch (err) {
-      console.error('Erro ao criar cliente', err);
-      alert('Erro ao criar cliente. Verifique os dados.');
+      setIsModalOpen(false);
+      setFormData({ name: '', email: '', phone: '' });
+      setEditingId(null);
+      fetchCustomers();
+    } catch (error) {
+      alert(editingId ? 'Erro ao atualizar cliente' : 'Erro ao cadastrar cliente');
     } finally {
       setIsSubmitting(false);
     }
   };
+
+  const handleEdit = (customer: Customer) => {
+    setEditingId(customer.id);
+    setFormData({ name: customer.name, email: customer.email || '', phone: customer.phone || '' });
+    setIsModalOpen(true);
+  };
+
+  const handleDelete = async (id: string) => {
+    if (window.confirm('Tem certeza que deseja excluir este cliente?')) {
+      try {
+        await deleteCustomer(id);
+        setToastMessage('Cliente excluído com sucesso!');
+        setTimeout(() => setToastMessage(''), 3000);
+        fetchCustomers();
+      } catch (err) {
+        alert('Erro ao excluir cliente');
+      }
+    }
+  };
+
+  const openNewModal = () => {
+    setEditingId(null);
+    setFormData({ name: '', email: '', phone: '' });
+    setIsModalOpen(true);
+  };
+
 
   return (
     <div className="space-y-6">
@@ -79,7 +111,7 @@ export function Customers() {
           <p className="text-slate-600 dark:text-slate-400 mt-1">Gerencie sua carteira de clientes</p>
         </div>
         <button
-          onClick={() => setIsModalOpen(true)}
+          onClick={openNewModal}
           className="w-full sm:w-auto flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors shadow-sm"
         >
           <Plus className="w-5 h-5" />
@@ -103,7 +135,7 @@ export function Customers() {
             Você ainda não tem clientes na sua base de dados. Comece adicionando o seu primeiro cliente agora mesmo.
           </p>
           <button
-            onClick={() => setIsModalOpen(true)}
+            onClick={openNewModal}
             className="text-blue-600 hover:text-blue-700 dark:text-blue-400 font-medium flex items-center gap-2"
           >
             <Plus className="w-5 h-5" /> Cadastrar meu primeiro cliente
@@ -115,7 +147,17 @@ export function Customers() {
           <div className="grid grid-cols-1 gap-4 md:hidden">
             {customers.map(customer => (
               <div key={customer.id} className="bg-white dark:bg-slate-800 p-5 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
-                <h3 className="font-bold text-slate-900 dark:text-white text-lg mb-3">{customer.name}</h3>
+                <div className="flex justify-between items-start mb-3">
+                  <h3 className="font-bold text-slate-900 dark:text-white text-lg">{customer.name}</h3>
+                  <div className="flex items-center gap-3">
+                    <button onClick={() => handleEdit(customer)} className="text-blue-600 dark:text-blue-400" title="Editar">
+                      <Edit2 className="w-4 h-4" />
+                    </button>
+                    <button onClick={() => handleDelete(customer.id)} className="text-red-600 dark:text-red-400" title="Excluir">
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
                 <div className="space-y-2 text-slate-600 dark:text-slate-300">
                   <div className="flex items-center gap-3">
                     <Mail className="w-4 h-4 text-slate-400" />
@@ -138,6 +180,7 @@ export function Customers() {
                   <th className="px-6 py-4 font-semibold text-slate-700 dark:text-slate-300">Nome do Cliente</th>
                   <th className="px-6 py-4 font-semibold text-slate-700 dark:text-slate-300">E-mail</th>
                   <th className="px-6 py-4 font-semibold text-slate-700 dark:text-slate-300">Telefone</th>
+                  <th className="px-6 py-4 font-semibold text-slate-700 dark:text-slate-300 text-right">Ações</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-slate-700/50">
@@ -158,6 +201,14 @@ export function Customers() {
                         {formatPhone(customer.phone || '')}
                       </div>
                     </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <button onClick={() => handleEdit(customer)} className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 mr-4" title="Editar">
+                        <Edit2 className="w-4 h-4" />
+                      </button>
+                      <button onClick={() => handleDelete(customer.id)} className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300" title="Excluir">
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -174,7 +225,7 @@ export function Customers() {
             <div className="flex items-center justify-between p-6 border-b border-slate-100 dark:border-slate-700">
               <h2 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
                 <Users className="w-5 h-5 text-blue-500" />
-                Novo Cliente
+                {editingId ? "Editar Cliente" : "Novo Cliente"}
               </h2>
               <button 
                 onClick={() => setIsModalOpen(false)}
@@ -185,7 +236,7 @@ export function Customers() {
               </button>
             </div>
             
-            <form onSubmit={handleCreateCustomer} className="p-6 space-y-5">
+            <form onSubmit={handleSubmitCustomer} className="p-6 space-y-5">
               <div>
                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Nome Completo</label>
                 <input
@@ -241,7 +292,7 @@ export function Customers() {
                   {isSubmitting ? (
                     <Loader2 className="w-5 h-5 animate-spin" />
                   ) : (
-                    'Salvar Cliente'
+                    (editingId ? 'Salvar Alterações' : 'Salvar Cliente')
                   )}
                 </button>
               </div>

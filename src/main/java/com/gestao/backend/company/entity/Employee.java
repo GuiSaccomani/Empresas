@@ -1,21 +1,22 @@
 package com.gestao.backend.company.entity;
 
-import com.gestao.backend.core.entity.Address;
+import com.gestao.backend.core.security.Role;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "companies", indexes = {@Index(name = "idx_company_slug", columnList = "slug", unique = true)})
+@Table(name = "employees")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Company {
+public class Employee {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -24,23 +25,18 @@ public class Company {
     @Column(nullable = false, length = 150)
     private String name;
 
-    @Column(nullable = false, unique = true, length = 18)
-    private String document; // CNPJ ou CPF para registro no BD
-
-    @Column(nullable = false, length = 100)
+    @Column(nullable = false, unique = true, length = 100)
     private String email;
-
-    @Column(length = 150, unique = true)
-    private String slug;
 
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "phone", length = 20)
-    private String phone;
+    @Column(name = "company_id", nullable = false)
+    private UUID companyId;
 
-    @Embedded
-    private Address address;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
@@ -49,12 +45,4 @@ public class Company {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
-
-    @PrePersist
-    @PreUpdate
-    protected void formatFields() {
-        if (this.address != null) {
-            this.address.formatToUpperCase();
-        }
-    }
 }

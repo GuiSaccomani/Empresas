@@ -1,6 +1,5 @@
 package com.gestao.backend.core.security;
 
-import com.gestao.backend.company.entity.Company;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -12,29 +11,39 @@ import java.util.UUID;
 
 public class CustomUserDetails implements UserDetails {
 
-    private final Company company;
+    @Getter
+    private final UUID id;
+    
+    private final String email;
+    private final String password;
     
     @Getter
     private final UUID companyId;
+    
+    @Getter
+    private final Role role;
 
-    public CustomUserDetails(Company company) {
-        this.company = company;
-        this.companyId = company.getId();
+    public CustomUserDetails(UUID id, String email, String password, UUID companyId, Role role) {
+        this.id = id;
+        this.email = email;
+        this.password = password;
+        this.companyId = companyId;
+        this.role = role;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_COMPANY"));
+        return Collections.singletonList(new SimpleGrantedAuthority(role.name()));
     }
 
     @Override
     public String getPassword() {
-        return company.getPassword();
+        return password;
     }
 
     @Override
     public String getUsername() {
-        return company.getEmail();
+        return email;
     }
 
     @Override

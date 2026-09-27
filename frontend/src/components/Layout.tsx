@@ -1,33 +1,46 @@
-import { useState } from 'react';
-import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
-import { Home, Users, Calendar, DollarSign, LogOut, Menu, X, Building2 } from 'lucide-react';
+import { useState, useContext } from 'react';
+import { Outlet, Link, useLocation } from 'react-router-dom';
+import { Home, Users, Calendar, DollarSign, LogOut, Menu, X, Building2, Shield } from 'lucide-react';
+import { AuthContext } from '../contexts/AuthContext';
 
 export function Layout() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const navigate = useNavigate();
-  const location = useLocation();
+    const location = useLocation();
+  const { user, logout } = useContext(AuthContext);
 
   const handleLogout = () => {
-    localStorage.removeItem('@ProjetoEmpresa:token');
-    navigate('/');
+    logout();
   };
 
   const navItems = [
-    { name: 'Início', path: '/dashboard', icon: Home },
-    { name: 'Clientes', path: '/dashboard/clientes', icon: Users },
-    { name: 'Agenda', path: '/dashboard/agenda', icon: Calendar },
-    { name: 'Financeiro', path: '/dashboard/financeiro', icon: DollarSign },
+    { name: 'Início', path: '/dashboard', icon: Home, adminOnly: false },
+    { name: 'Clientes', path: '/dashboard/clientes', icon: Users, adminOnly: false },
+    { name: 'Agenda', path: '/dashboard/agenda', icon: Calendar, adminOnly: false },
+    { name: 'Financeiro', path: '/dashboard/financeiro', icon: DollarSign, adminOnly: true },
+    { name: 'Minha Equipe', path: '/dashboard/equipe', icon: Shield, adminOnly: true },
   ];
+
+  const filteredNavItems = navItems.filter(item => {
+    if (item.adminOnly && user?.role !== 'ROLE_ADMIN') {
+      return false;
+    }
+    return true;
+  });
 
   const SidebarContent = () => (
     <div className="flex flex-col h-full bg-slate-900 text-slate-300">
-      <div className="p-6 flex items-center gap-3 text-white font-bold text-xl border-b border-slate-800">
-        <Building2 className="w-8 h-8 text-blue-500" />
-        Gestão PRO
+      <div className="p-6 flex flex-col gap-1 border-b border-slate-800">
+        <div className="flex items-center gap-3 text-white font-bold text-xl">
+          <Building2 className="w-8 h-8 text-blue-500" />
+          Gestão PRO
+        </div>
+        <div className="text-xs font-semibold text-slate-400 mt-2 px-1 uppercase tracking-wider">
+          {user?.role === 'ROLE_ADMIN' ? 'Administrador' : 'Equipe (Staff)'}
+        </div>
       </div>
       
       <nav className="flex-1 px-4 py-6 space-y-2">
-        {navItems.map((item) => {
+        {filteredNavItems.map((item) => {
           const isActive = location.pathname === item.path;
           return (
             <Link

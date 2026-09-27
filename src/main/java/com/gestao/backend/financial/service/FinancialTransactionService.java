@@ -22,6 +22,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@SuppressWarnings("null")
 public class FinancialTransactionService {
 
     private final FinancialTransactionRepository repository;

@@ -8,6 +8,8 @@ public record AppointmentRequestDTO(
     @NotNull(message = "O ID do cliente é obrigatório")
     UUID customerId,
     
+    UUID employeeId,
+    
     @NotNull(message = "A data/hora do agendamento é obrigatória")
     LocalDateTime scheduledTime,
     

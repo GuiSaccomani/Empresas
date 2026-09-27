@@ -7,10 +7,16 @@ import { Dashboard } from './pages/Dashboard';
 import { Customers } from './pages/Customers';
 import { Layout } from './components/Layout';
 import { PrivateRoute } from './components/PrivateRoute';
+import { Team } from './pages/Team';
+import { Agenda } from './pages/Agenda';
+import { Financeiro } from './pages/Financeiro';
+import { PublicBooking } from './pages/PublicBooking';
 
 function App() {
   return (
     <Routes>
+        {/* Public Routes */}
+        <Route path="/agendar/:slug" element={<PublicBooking />} />
       <Route path="/" element={<Navigate to="/login" replace />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
@@ -21,8 +27,9 @@ function App() {
         <Route element={<Layout />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/dashboard/clientes" element={<Customers />} />
-          <Route path="/dashboard/agenda" element={<div className="p-4 text-slate-500 font-medium">PÃ¡gina de Agenda (Em Breve)</div>} />
-          <Route path="/dashboard/financeiro" element={<div className="p-4 text-slate-500 font-medium">PÃ¡gina do Financeiro (Em Breve)</div>} />
+          <Route path="/dashboard/equipe" element={<Team />} />
+          <Route path="/dashboard/agenda" element={<Agenda />} />
+          <Route path="/dashboard/financeiro" element={<Financeiro />} />
         </Route>
       </Route>
 

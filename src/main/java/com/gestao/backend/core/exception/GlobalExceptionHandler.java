@@ -12,6 +12,7 @@ import java.net.URI;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
+@SuppressWarnings("null")
 public class GlobalExceptionHandler {
 
     // Erros 404 - Recursos não encontrados

@@ -17,6 +17,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@SuppressWarnings("null")
 public class CustomerService {
 
     private final CustomerRepository customerRepository;
@@ -53,5 +54,43 @@ public class CustomerService {
 
         customer = customerRepository.save(customer);
         return CustomerResponseDTO.fromEntity(customer);
+    }
+
+    @Transactional
+    public CustomerResponseDTO update(UUID id, CustomerRequestDTO dto) {
+        UUID companyId = SecurityUtils.getCurrentCompanyId();
+        
+        Customer customer = customerRepository.findById(id)
+                .orElseThrow(() -> new jakarta.persistence.EntityNotFoundException("Cliente não encontrado"));
+                
+        if (!customer.getCompany().getId().equals(companyId)) {
+            throw new org.springframework.security.access.AccessDeniedException("Você não tem permissão para editar este cliente");
+        }
+
+        String formattedPhone = null;
+        if (dto.phone() != null && !dto.phone().isBlank()) {
+            formattedPhone = WhatsAppPhoneFormatter.formatToE164(dto.phone());
+        }
+
+        customer.setName(dto.name());
+        customer.setEmail(dto.email());
+        customer.setPhone(formattedPhone);
+        
+        customer = customerRepository.save(customer);
+        return CustomerResponseDTO.fromEntity(customer);
+    }
+
+    @Transactional
+    public void delete(UUID id) {
+        UUID companyId = SecurityUtils.getCurrentCompanyId();
+        
+        Customer customer = customerRepository.findById(id)
+                .orElseThrow(() -> new jakarta.persistence.EntityNotFoundException("Cliente não encontrado"));
+                
+        if (!customer.getCompany().getId().equals(companyId)) {
+            throw new org.springframework.security.access.AccessDeniedException("Você não tem permissão para excluir este cliente");
+        }
+        
+        customerRepository.delete(customer);
     }
 }

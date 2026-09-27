@@ -10,9 +10,10 @@ import java.util.UUID;
 @Repository
 public interface CompanyRepository extends JpaRepository<Company, UUID> {
     
-    // Busca empresa pelo documento (CNPJ/CPF) para validações de duplicidade
     Optional<Company> findByDocument(String document);
-    
-    // Busca empresa pelo email (Útil para futuro login/autenticação via JWT)
     Optional<Company> findByEmail(String email);
+    Optional<Company> findBySlug(String slug);
+    
+    boolean existsByEmail(String email);
+    boolean existsByDocument(String document);
 }

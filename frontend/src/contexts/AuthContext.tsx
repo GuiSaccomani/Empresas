@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 interface User {
   companyId: string;
   sub: string;
+  role: string;
 }
 
 interface AuthContextData {
@@ -42,7 +43,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     
     const loggedUser = {
       companyId: payload.companyId,
-      sub: payload.sub
+      sub: payload.sub,
+      role: payload.role
     };
 
     setUser(loggedUser);

@@ -6,18 +6,17 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @Repository
 public interface CustomerRepository extends JpaRepository<Customer, UUID> {
     
-    // SEGURANÇA MULTI-TENANCY: Retorna apenas clientes pertencentes à empresa informada.
+    // SEGURANÇA MULTI-TENANCY: Retorna apenas clientes pertencentes Ã  empresa informada.
     // PAGINAÇÃO: Otimizado para Mobile via Pageable
     Page<Customer> findAllByCompanyId(UUID companyId, Pageable pageable);
     
-    // Busca um cliente específico garantindo que pertence à empresa correta.
+    // Busca um cliente específico garantindo que pertence Ã  empresa correta.
     Optional<Customer> findByIdAndCompanyId(UUID id, UUID companyId);
     
     // Busca cliente pelo telefone dentro de um Tenant (Essencial para receber Webhooks do WhatsApp).

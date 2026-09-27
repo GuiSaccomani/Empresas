@@ -1,3 +1,10 @@
+server:
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+
 spring:
   mail:
     host: smtp.gmail.com
@@ -11,7 +18,7 @@ spring:
           starttls:
             enable: true
   datasource:
-    url: jdbc:postgresql://localhost:5432/gestao_db
+    url: jdbc:postgresql://localhost:5432/gestao_db?useUnicode=true&characterEncoding=UTF-8
     username: gestao_user
     password: gestao_password
     driver-class-name: org.postgresql.Driver

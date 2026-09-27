@@ -113,7 +113,7 @@ export function Register() {
           </div>
           <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Conta Criada com Sucesso!</h2>
           <p className="text-slate-600 dark:text-slate-300 mb-6">
-            Seja bem-vindo. Você será redirecionado para a tela de login em instantes...
+            Seja bem-vindo. Vocêê será redirecionado para a tela de login em instantes...
           </p>
           <div className="flex justify-center">
             <Loader2 className="h-6 w-6 text-brand-DEFAULT animate-spin" />

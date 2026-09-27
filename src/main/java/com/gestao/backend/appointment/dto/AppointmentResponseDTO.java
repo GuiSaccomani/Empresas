@@ -9,6 +9,8 @@ public record AppointmentResponseDTO(
     UUID id,
     UUID customerId,
     String customerName,
+    UUID employeeId,
+    String employeeName,
     LocalDateTime scheduledTime,
     AppointmentStatus status,
     String notes
@@ -18,6 +20,8 @@ public record AppointmentResponseDTO(
             appointment.getId(),
             appointment.getCustomer().getId(),
             appointment.getCustomer().getName(),
+            appointment.getEmployee() != null ? appointment.getEmployee().getId() : null,
+            appointment.getEmployee() != null ? appointment.getEmployee().getName() : null,
             appointment.getScheduledTime(),
             appointment.getStatus(),
             appointment.getNotes()

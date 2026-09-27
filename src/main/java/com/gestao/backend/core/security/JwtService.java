@@ -26,8 +26,9 @@ public class JwtService {
 
     public String generateToken(CustomUserDetails userDetails) {
         return Jwts.builder()
-                .setSubject(userDetails.getUsername()) // O email da Company
-                .claim("companyId", userDetails.getCompanyId().toString()) // Claim customizada essencial para Multi-Tenancy
+                .setSubject(userDetails.getUsername())
+                .claim("companyId", userDetails.getCompanyId().toString())
+                .claim("role", userDetails.getRole().name())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)

@@ -1,6 +1,7 @@
 package com.gestao.backend.appointment.entity;
 
 import com.gestao.backend.company.entity.Company;
+import com.gestao.backend.company.entity.Employee;
 import com.gestao.backend.customer.entity.Customer;
 import jakarta.persistence.*;
 import lombok.*;
@@ -30,12 +31,20 @@ public class Appointment {
     @JoinColumn(name = "customer_id", nullable = false)
     private Customer customer;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "employee_id", nullable = true)
+    private Employee employee;
+
     @Column(name = "scheduled_time", nullable = false)
     private LocalDateTime scheduledTime;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private AppointmentStatus status;
+
+    @Column(name = "reminder_sent", nullable = false)
+    @Builder.Default
+    private boolean reminderSent = false;
 
     @Column(columnDefinition = "TEXT")
     private String notes;
