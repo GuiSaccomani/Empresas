@@ -127,7 +127,7 @@ public class AppointmentService {
                     .company(appointment.getCompany())
                     .amount(dto.amount())
                     .type(TransactionType.INCOME)
-                    .description("Serveço: " + appointment.getCustomer().getName())
+                    .description("Serviço: " + appointment.getCustomer().getName())
                     .transactionDate(LocalDate.now())
                     .build();
             financialTransactionRepository.save(transaction);

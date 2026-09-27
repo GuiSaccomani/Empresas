@@ -15,6 +15,13 @@ public class DatabaseFixRunner implements CommandLineRunner {
     public void run(String... args) throws Exception {
         System.out.println("=== RUNNING DATABASE ENCODING FIX ===");
         try {
+            jdbcTemplate.execute(
+                "CREATE UNIQUE INDEX IF NOT EXISTS idx_unique_appointment_slot " +
+                "ON appointments (company_id, scheduled_time) " +
+                "WHERE status != 'CANCELLED';"
+            );
+            System.out.println("=== UNIQUE INDEX idx_unique_appointment_slot CREATED ===");
+
             int updated = jdbcTemplate.update(
                 "UPDATE financial_transactions " +
                 "SET description = REPLACE(REPLACE(description, 'Serviço', 'Serviço'), 'Serviço', 'Serviço') " +
