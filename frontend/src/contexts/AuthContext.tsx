@@ -40,7 +40,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   async function login(email: string, password: string) {
     const response = await api.post('/auth/login', { email, password });
-    const { token } = response.data;
+    const { token, usaAgenda, usaFinanceiro, usaClientes } = response.data;
 
     const payload = JSON.parse(atob(token.split('.')[1]));
     
@@ -48,9 +48,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       companyId: payload.companyId,
       sub: payload.sub,
       role: payload.role,
-      usaAgenda: payload.usaAgenda !== false,
-      usaFinanceiro: payload.usaFinanceiro !== false,
-      usaClientes: payload.usaClientes !== false
+      usaAgenda: usaAgenda ?? true,
+      usaFinanceiro: usaFinanceiro ?? true,
+      usaClientes: usaClientes ?? true
     };
 
     setUser(loggedUser);

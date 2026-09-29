@@ -1,5 +1,8 @@
 package com.gestao.backend.company.dto;
 
 public record LoginResponseDTO(
-    String token
+    String token,
+    boolean usaAgenda,
+    boolean usaFinanceiro,
+    boolean usaClientes
 ) {}

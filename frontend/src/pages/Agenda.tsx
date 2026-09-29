@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, Clock, ChevronLeft, ChevronRight, Plus, X, Loader2, CheckCircle , Bell, Trash2} from 'lucide-react';
+import { Calendar, Clock, ChevronLeft, ChevronRight, Plus, X, Loader2, CheckCircle, Trash2 } from 'lucide-react';
 import { getAppointmentsByRange, createAppointment, updateAppointmentStatus, deleteAppointment, type Appointment , } from '../services/appointments';
 import { getCustomers, type Customer } from '../services/customers';
 
@@ -31,16 +31,7 @@ export function Agenda() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [toastMsg, setToastMsg] = useState('');
 
-  const handleSendReminder = async (e: React.MouseEvent, id: string) => {
-    e.stopPropagation();
-    try {
-      await (id);
-      setToastMsg('Lembrete enviado!');
-      setTimeout(() => setToastMsg(''), 3000);
-    } catch (err) {
-      alert('Erro ao enviar lembrete.');
-    }
-  };
+
   const [newFormData, setNewFormData] = useState({
     customerId: '',
     date: '',
@@ -266,15 +257,7 @@ export function Agenda() {
                           <div className="opacity-80 flex items-center justify-between mt-1">
                             <span>{new Date(app.scheduledTime).toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'})}</span>
                             <div className="flex items-center gap-2">
-                              {app.status !== 'COMPLETED' && app.status !== 'CANCELLED' && (
-                                <button 
-                                  onClick={(e) => handleSendReminder(e, app.id)}
-                                  className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors"
-                                  title="Enviar lembrete"
-                                >
-                                  <Bell className="w-3 h-3" />
-                                </button>
-                              )}
+
                               <span>{app.status === 'COMPLETED' ? 'Concluído' : 'Agendado'}</span>
                             </div>
                           </div>

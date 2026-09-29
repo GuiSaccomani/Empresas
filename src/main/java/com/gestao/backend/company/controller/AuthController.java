@@ -37,7 +37,12 @@ public class AuthController {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         String token = jwtService.generateToken(userDetails);
 
-        return ResponseEntity.ok(new LoginResponseDTO(token));
+        return ResponseEntity.ok(new LoginResponseDTO(
+            token,
+            userDetails.isUsaAgenda(),
+            userDetails.isUsaFinanceiro(),
+            userDetails.isUsaClientes()
+        ));
     }
 
     @PostMapping("/forgot-password")
