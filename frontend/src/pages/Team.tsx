@@ -166,7 +166,23 @@ export function Team() {
         </div>
       )}
 
-      <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
+            <div className="sm:hidden space-y-4">
+        {employees.length === 0 ? (
+          <div className="text-center text-slate-500 py-4">Nenhum funcionário cadastrado.</div>
+        ) : (
+          employees.map((emp) => (
+            <div key={emp.id} className="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
+              <div className="font-semibold text-slate-900 dark:text-white mb-2">{emp.name}</div>
+              <div className="text-sm text-slate-600 dark:text-slate-400 mb-2">{emp.email}</div>
+              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300">
+                {emp.role === 'ROLE_STAFF' ? 'Staff' : emp.role}
+              </span>
+            </div>
+          ))
+        )}
+      </div>
+
+      <div className="hidden sm:block bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left">
             <thead className="bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700">

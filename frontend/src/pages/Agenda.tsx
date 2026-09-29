@@ -18,6 +18,7 @@ const HOURS = Array.from({ length: 11 }, (_, i) => i + 8); // 08:00 to 18:00
 
 export function Agenda() {
   const [currentWeekStart, setCurrentWeekStart] = useState<Date>(getStartOfWeek(new Date()));
+  const [selectedMobileDay, setSelectedMobileDay] = useState(new Date().getDay() === 0 ? 6 : new Date().getDay() - 1);
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -190,7 +191,85 @@ export function Agenda() {
         </button>
       </div>
 
-      <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-x-auto">
+            {/* Mobile Agenda */}
+      <div className="md:hidden space-y-4">
+        {/* Pills */}
+        <div className="flex gap-2 overflow-x-auto pb-2 -mx-4 px-4 snap-x">
+          {weekDays.map((day, i) => (
+            <button
+              key={i}
+              onClick={() => setSelectedMobileDay(i)}
+              className={`snap-center flex-shrink-0 flex flex-col items-center justify-center w-16 h-20 rounded-2xl border transition-all ${selectedMobileDay === i ? 'bg-blue-600 border-blue-600 text-white shadow-md' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}
+            >
+              <span className="text-xs font-semibold uppercase">{day.toLocaleDateString('pt-BR', { weekday: 'short' })}</span>
+              <span className="text-xl font-bold mt-1">{day.getDate()}</span>
+            </button>
+          ))}
+        </div>
+
+        {/* List of hours for selected day */}
+        <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 divide-y divide-slate-100 dark:divide-slate-700/50">
+          {isLoading ? (
+            <div className="flex justify-center p-12"><Loader2 className="w-8 h-8 animate-spin text-blue-500" /></div>
+          ) : (
+            HOURS.map(hour => {
+              const mobileDay = weekDays[selectedMobileDay];
+              const cellAppointments = appointments.filter(a => {
+                const ad = new Date(a.scheduledTime);
+                return ad.getDate() === mobileDay.getDate() && ad.getMonth() === mobileDay.getMonth() && ad.getHours() === hour;
+              });
+
+              return (
+                <div key={hour} className="flex min-h-[80px]">
+                  <div className="w-20 p-4 border-r border-slate-100 dark:border-slate-700/50 flex flex-col items-center justify-center text-sm font-medium text-slate-500 dark:text-slate-400">
+                    {hour.toString().padStart(2, '0')}:00
+                  </div>
+                  <div className="flex-1 p-3 cursor-pointer group relative" onClick={() => {
+                    const y = mobileDay.getFullYear();
+                    const m = String(mobileDay.getMonth() + 1).padStart(2, '0');
+                    const d = String(mobileDay.getDate()).padStart(2, '0');
+                    setNewFormData({
+                      customerId: '',
+                      date: `${y}-${m}-${d}`,
+                      time: `${hour.toString().padStart(2, '0')}:00`,
+                      notes: ''
+                    });
+                    setIsNewModalOpen(true);
+                  }}>
+                    {cellAppointments.length === 0 ? (
+                      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                        <Plus className="w-6 h-6 text-blue-500/30" />
+                      </div>
+                    ) : (
+                      cellAppointments.map(app => (
+                        <div
+                          key={app.id}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (app.status !== 'COMPLETED' && app.status !== 'CANCELLED') {
+                              setSelectedAppointment(app);
+                              setIsCompleteModalOpen(true);
+                            }
+                          }}
+                          className={`mb-2 last:mb-0 p-3 rounded-lg border text-sm relative z-10 ${app.status !== 'COMPLETED' && app.status !== 'CANCELLED' ? 'cursor-pointer hover:shadow-md transition-shadow' : ''} ${getStatusColor(app.status)}`}
+                        >
+                          <div className="font-bold">{app.customerName}</div>
+                          <div className="opacity-80 flex items-center justify-between mt-1 text-xs">
+                            <span>{new Date(app.scheduledTime).toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'})}</span>
+                            <span>{app.status === 'COMPLETED' ? 'Concluído' : 'Agendado'}</span>
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
+              );
+            })
+          )}
+        </div>
+      </div>
+
+      <div className="hidden md:block bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-x-auto">
         <div className="min-w-[800px]">
           <div className="grid grid-cols-8 border-b border-slate-200 dark:border-slate-700">
             <div className="p-4 flex items-center justify-center border-r border-slate-200 dark:border-slate-700 text-slate-400">
@@ -279,13 +358,13 @@ export function Agenda() {
       {isNewModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={() => !isSubmitting && setIsNewModalOpen(false)}></div>
-          <div className="relative bg-white dark:bg-slate-800 rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-fade-in-up">
+          <div className="relative bg-white dark:bg-slate-800 rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto animate-fade-in-up">
             <div className="flex items-center justify-between p-6 border-b border-slate-100 dark:border-slate-700">
               <h2 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
                 <Calendar className="w-5 h-5 text-blue-500" />
                 Novo Agendamento
               </h2>
-              <button onClick={() => setIsNewModalOpen(false)} disabled={isSubmitting} className="text-slate-400 hover:text-slate-600 transition-colors">
+              <button onClick={() => setIsNewModalOpen(false)} disabled={isSubmitting} className="p-2 text-slate-400 hover:text-slate-600 transition-colors">
                 <X className="w-6 h-6" />
               </button>
             </div>
@@ -360,7 +439,7 @@ export function Agenda() {
       {isCompleteModalOpen && selectedAppointment && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={() => !isSubmitting && setIsCompleteModalOpen(false)}></div>
-          <div className="relative bg-white dark:bg-slate-800 rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden animate-fade-in-up">
+          <div className="relative bg-white dark:bg-slate-800 rounded-2xl shadow-2xl w-full max-w-sm max-h-[90vh] overflow-y-auto animate-fade-in-up">
             <div className="flex flex-col items-center p-8 text-center">
               <div className="w-16 h-16 bg-green-100 dark:bg-green-900/30 text-green-500 rounded-full flex items-center justify-center mb-4">
                 <CheckCircle className="w-8 h-8" />

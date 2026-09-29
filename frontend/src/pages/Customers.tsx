@@ -136,7 +136,7 @@ export function Customers() {
           </p>
           <button
             onClick={openNewModal}
-            className="text-blue-600 hover:text-blue-700 dark:text-blue-400 font-medium flex items-center gap-2"
+            className="p-2 text-blue-600 hover:text-blue-700 dark:text-blue-400 font-medium flex items-center gap-2"
           >
             <Plus className="w-5 h-5" /> Cadastrar meu primeiro cliente
           </button>
@@ -150,10 +150,10 @@ export function Customers() {
                 <div className="flex justify-between items-start mb-3">
                   <h3 className="font-bold text-slate-900 dark:text-white text-lg">{customer.name}</h3>
                   <div className="flex items-center gap-3">
-                    <button onClick={() => handleEdit(customer)} className="text-blue-600 dark:text-blue-400" title="Editar">
+                    <button onClick={() => handleEdit(customer)} className="p-2 text-blue-600 dark:text-blue-400" title="Editar">
                       <Edit2 className="w-4 h-4" />
                     </button>
-                    <button onClick={() => handleDelete(customer.id)} className="text-red-600 dark:text-red-400" title="Excluir">
+                    <button onClick={() => handleDelete(customer.id)} className="p-2 text-red-600 dark:text-red-400" title="Excluir">
                       <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
@@ -173,7 +173,7 @@ export function Customers() {
           </div>
 
           {/* Desktop Table */}
-          <div className="hidden md:block bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
+          <div className="hidden sm:block bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
             <table className="w-full text-left">
               <thead className="bg-slate-50 dark:bg-slate-900/50 border-b border-slate-200 dark:border-slate-700">
                 <tr>
@@ -202,10 +202,10 @@ export function Customers() {
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <button onClick={() => handleEdit(customer)} className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 mr-4" title="Editar">
+                      <button onClick={() => handleEdit(customer)} className="p-2 text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 mr-4" title="Editar">
                         <Edit2 className="w-4 h-4" />
                       </button>
-                      <button onClick={() => handleDelete(customer.id)} className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300" title="Excluir">
+                      <button onClick={() => handleDelete(customer.id)} className="p-2 text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300" title="Excluir">
                         <Trash2 className="w-4 h-4" />
                       </button>
                     </td>
@@ -221,7 +221,7 @@ export function Customers() {
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={() => !isSubmitting && setIsModalOpen(false)}></div>
-          <div className="relative bg-white dark:bg-slate-800 rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-fade-in-up">
+          <div className="relative bg-white dark:bg-slate-800 rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto animate-fade-in-up">
             <div className="flex items-center justify-between p-6 border-b border-slate-100 dark:border-slate-700">
               <h2 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
                 <Users className="w-5 h-5 text-blue-500" />
@@ -230,7 +230,7 @@ export function Customers() {
               <button 
                 onClick={() => setIsModalOpen(false)}
                 disabled={isSubmitting}
-                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
+                className="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
               >
                 <X className="w-6 h-6" />
               </button>

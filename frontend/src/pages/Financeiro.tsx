@@ -133,7 +133,36 @@ export function Financeiro() {
           </div>
         ) : (
           <>
-            <div className="overflow-x-auto">
+                      <div className="sm:hidden space-y-4 mb-6">
+            {transactions.length === 0 ? (
+              <div className="text-center text-slate-500 py-4">Nenhum lançamento encontrado.</div>
+            ) : (
+              transactions.map(tx => (
+                <div key={tx.id} className="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 flex flex-col gap-2">
+                  <div className="flex justify-between items-start gap-4">
+                    <div className="font-semibold text-slate-900 dark:text-white break-words flex-1">{tx.description}</div>
+                    <span className={`font-bold whitespace-nowrap ${tx.type === 'INCOME' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+                      {tx.type === 'INCOME' ? '+' : '-'} {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(tx.amount)}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center text-sm mt-1">
+                    <span className="text-slate-500">{new Date(tx.transactionDate + 'T12:00:00').toLocaleDateString('pt-BR')}</span>
+                    {tx.type === 'INCOME' ? (
+                      <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
+                        <TrendingUp className="w-3 h-3" /> Receita
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400">
+                        <TrendingDown className="w-3 h-3" /> Despesa
+                      </span>
+                    )}
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+
+          <div className="hidden sm:block overflow-x-auto">
               <table className="w-full text-left">
                 <thead className="bg-slate-50 dark:bg-slate-900/50 border-b border-slate-200 dark:border-slate-700">
                   <tr>
@@ -209,13 +238,13 @@ export function Financeiro() {
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={() => !isSubmitting && setIsModalOpen(false)}></div>
-          <div className="relative bg-white dark:bg-slate-800 rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-fade-in-up">
+          <div className="relative bg-white dark:bg-slate-800 rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto animate-fade-in-up">
             <div className="flex items-center justify-between p-6 border-b border-slate-100 dark:border-slate-700">
               <h2 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
                 <DollarSign className="w-5 h-5 text-blue-500" />
                 Novo Lançamento
               </h2>
-              <button onClick={() => setIsModalOpen(false)} disabled={isSubmitting} className="text-slate-400 hover:text-slate-600 transition-colors">
+              <button onClick={() => setIsModalOpen(false)} disabled={isSubmitting} className="p-2 text-slate-400 hover:text-slate-600 transition-colors">
                 <X className="w-6 h-6" />
               </button>
             </div>
