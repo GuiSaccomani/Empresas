@@ -47,6 +47,16 @@ public class GlobalExceptionHandler {
         return problemDetail;
     }
 
+    
+    // Erros 409 - Conflito de recursos duplicados
+    @ExceptionHandler(DuplicateResourceException.class)
+    public ProblemDetail handleDuplicateResource(DuplicateResourceException ex) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
+        problemDetail.setTitle("Conflito");
+        problemDetail.setType(URI.create("https://api.nosso-app.com/errors/conflict"));
+        return problemDetail;
+    }
+
     // Erros 500 - Captura de segurança genérica
     @ExceptionHandler(Exception.class)
     public ProblemDetail handleGenericException(Exception ex) {

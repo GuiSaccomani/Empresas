@@ -5,6 +5,7 @@ import com.gestao.backend.company.repository.CompanyRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import com.gestao.backend.core.exception.DuplicateResourceException;
 
 @Service
 @RequiredArgsConstructor
@@ -29,11 +30,11 @@ public class CompanyService {
 
         // 2. Bloqueio de Duplicidade
         if (companyRepository.existsByEmail(company.getEmail())) {
-            throw new RuntimeException("Este E-mail já está cadastrado em nosso sistema.");
+            throw new DuplicateResourceException("Este E-mail já está cadastrado em nosso sistema.");
         }
 
         if (companyRepository.existsByDocument(company.getDocument())) {
-            throw new RuntimeException("Este CPF/CNPJ já está cadastrado em nosso sistema.");
+            throw new DuplicateResourceException("Este CPF/CNPJ já está cadastrado em nosso sistema.");
         }
 
         // Criptografando a senha antes de salvar no banco
