@@ -50,15 +50,15 @@ public class Company {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @Column(name = "usa_agenda", nullable = false)
+    @Column(name = "usa_agenda", nullable = false, columnDefinition = "boolean default true")
     @Builder.Default
     private boolean usaAgenda = true;
 
-    @Column(name = "usa_financeiro", nullable = false)
+    @Column(name = "usa_financeiro", nullable = false, columnDefinition = "boolean default true")
     @Builder.Default
     private boolean usaFinanceiro = true;
 
-    @Column(name = "usa_clientes", nullable = false)
+    @Column(name = "usa_clientes", nullable = false, columnDefinition = "boolean default true")
     @Builder.Default
     private boolean usaClientes = true;
 
