@@ -10,6 +10,6 @@ import java.util.List;
 
 @Repository
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
-    Page<Notification> findByCompanyIdOrderByCreatedAtDesc(Long companyId, Pageable pageable);
-    List<Notification> findByCompanyIdAndReadFalse(Long companyId);
+    Page<Notification> findByCompanyIdOrderByCreatedAtDesc(java.util.UUID companyId, Pageable pageable);
+    List<Notification> findByCompanyIdAndReadFalse(java.util.UUID companyId);
 }

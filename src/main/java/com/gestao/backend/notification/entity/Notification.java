@@ -18,7 +18,7 @@ public class Notification {
     private Long id;
 
     @Column(name = "company_id", nullable = false)
-    private Long companyId;
+    private java.util.UUID companyId;
 
     @Column(nullable = false, length = 1000)
     private String message;

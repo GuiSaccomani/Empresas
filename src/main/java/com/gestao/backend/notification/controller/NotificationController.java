@@ -19,13 +19,13 @@ public class NotificationController {
     public ResponseEntity<Page<Notification>> getNotifications(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size) {
-        Long companyId = SecurityUtils.getCurrentCompanyId();
+        java.util.UUID companyId = SecurityUtils.getCurrentCompanyId();
         return ResponseEntity.ok(notificationService.getNotifications(companyId, page, size));
     }
 
     @PatchMapping("/{id}/read")
     public ResponseEntity<Void> markAsRead(@PathVariable Long id) {
-        Long companyId = SecurityUtils.getCurrentCompanyId();
+        java.util.UUID companyId = SecurityUtils.getCurrentCompanyId();
         notificationService.markAsRead(id, companyId);
         return ResponseEntity.ok().build();
     }
