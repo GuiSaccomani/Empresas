@@ -30,7 +30,10 @@ public class CustomUserDetailsService implements UserDetailsService {
                     company.getEmail(),
                     company.getPassword(),
                     company.getId(),
-                    Role.ROLE_ADMIN
+                    Role.ROLE_ADMIN,
+                    company.isUsaAgenda(),
+                    company.isUsaFinanceiro(),
+                    company.isUsaClientes()
             );
         }
 
@@ -38,12 +41,16 @@ public class CustomUserDetailsService implements UserDetailsService {
         Optional<Employee> employeeOpt = employeeRepository.findByEmail(username);
         if (employeeOpt.isPresent()) {
             Employee employee = employeeOpt.get();
+            Company company = companyRepository.findById(employee.getCompanyId()).orElseThrow();
             return new CustomUserDetails(
                     employee.getId(),
                     employee.getEmail(),
                     employee.getPassword(),
                     employee.getCompanyId(),
-                    employee.getRole()
+                    employee.getRole(),
+                    company.isUsaAgenda(),
+                    company.isUsaFinanceiro(),
+                    company.isUsaClientes()
             );
         }
 

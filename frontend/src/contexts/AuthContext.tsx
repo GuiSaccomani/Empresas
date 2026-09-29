@@ -7,6 +7,9 @@ interface User {
   companyId: string;
   sub: string;
   role: string;
+  usaAgenda: boolean;
+  usaFinanceiro: boolean;
+  usaClientes: boolean;
 }
 
 interface AuthContextData {
@@ -44,7 +47,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const loggedUser = {
       companyId: payload.companyId,
       sub: payload.sub,
-      role: payload.role
+      role: payload.role,
+      usaAgenda: payload.usaAgenda !== false,
+      usaFinanceiro: payload.usaFinanceiro !== false,
+      usaClientes: payload.usaClientes !== false
     };
 
     setUser(loggedUser);

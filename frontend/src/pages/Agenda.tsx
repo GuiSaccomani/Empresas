@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, Clock, ChevronLeft, ChevronRight, Plus, X, Loader2, CheckCircle , Bell, Trash2} from 'lucide-react';
-import { getAppointmentsByRange, createAppointment, updateAppointmentStatus, deleteAppointment, type Appointment , sendReminder} from '../services/appointments';
+import { getAppointmentsByRange, createAppointment, updateAppointmentStatus, deleteAppointment, type Appointment , } from '../services/appointments';
 import { getCustomers, type Customer } from '../services/customers';
 
 // Utility to get current week's Monday
@@ -34,7 +34,7 @@ export function Agenda() {
   const handleSendReminder = async (e: React.MouseEvent, id: string) => {
     e.stopPropagation();
     try {
-      await sendReminder(id);
+      await (id);
       setToastMsg('Lembrete enviado!');
       setTimeout(() => setToastMsg(''), 3000);
     } catch (err) {

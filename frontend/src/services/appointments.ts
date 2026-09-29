@@ -33,12 +33,8 @@ export const createAppointment = async (data: CreateAppointmentDTO) => {
 export const updateAppointmentStatus = async (id: string, status: string, amount?: number) => {
   const response = await api.patch<Appointment>(`/appointments/${id}/status`, { status, amount });
   return response.data;
-};// cache buster 1
-
-
-export const sendReminder = async (id: string) => {
-  await api.post(`/appointments/${id}/send-reminder`);
 };
+
 export const deleteAppointment = async (id: string) => {
   await api.delete(`/appointments/${id}`);
 };

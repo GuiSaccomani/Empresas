@@ -50,6 +50,18 @@ public class Company {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @Column(name = "usa_agenda", nullable = false)
+    @Builder.Default
+    private boolean usaAgenda = true;
+
+    @Column(name = "usa_financeiro", nullable = false)
+    @Builder.Default
+    private boolean usaFinanceiro = true;
+
+    @Column(name = "usa_clientes", nullable = false)
+    @Builder.Default
+    private boolean usaClientes = true;
+
     @PrePersist
     @PreUpdate
     protected void formatFields() {

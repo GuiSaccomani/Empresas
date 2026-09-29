@@ -8,6 +8,8 @@ import com.gestao.backend.company.entity.Company;
 import com.gestao.backend.company.repository.CompanyRepository;
 import com.gestao.backend.customer.entity.Customer;
 import com.gestao.backend.customer.repository.CustomerRepository;
+import com.gestao.backend.notification.entity.Notification;
+import com.gestao.backend.notification.repository.NotificationRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -32,6 +34,7 @@ public class BookingService {
     private final AppointmentRepository appointmentRepository;
     private final CustomerRepository customerRepository;
     private final JavaMailSender mailSender;
+    private final NotificationRepository notificationRepository;
 
     public Map<String, Object> getCompanyInfo(String slug) {
         Company company = companyRepository.findBySlug(slug)
@@ -140,41 +143,19 @@ public class BookingService {
             }
         }
 
-        // 2. Disparo do email de notificação para o dono da empresa
-        if (company.getEmail() != null && !company.getEmail().isBlank()) {
-            try {
-                org.springframework.mail.SimpleMailMessage ownerMessage = new org.springframework.mail.SimpleMailMessage();
-                ownerMessage.setTo(company.getEmail());
-                String dateStr = dto.getScheduledTime().toLocalDate().toString();
-                String timeStr = dto.getScheduledTime().toLocalTime().toString();
-                ownerMessage.setSubject("Novo agendamento: " + customer.getName() + " em " + dateStr + " às " + timeStr);
-                
-                ownerMessage.setText(String.format(
-                        "Olá,
-
-" +
-                        "Você tem um novo agendamento marcado pelo site!
-
-" +
-                        "Cliente: %s
-" +
-                        "Telefone: %s
-" +
-                        "Data: %s
-" +
-                        "Horário: %s
-
-" +
-                        "Acesse o painel Gestão PRO para mais detalhes.",
-                        customer.getName(),
-                        customer.getPhone() != null ? customer.getPhone() : "Não informado",
-                        dateStr,
-                        timeStr
-                ));
-                mailSender.send(ownerMessage);
-            } catch (Exception e) {
-                System.err.println("Falha ao enviar email de notificação para o dono: " + e.getMessage());
-            }
+        // 2. Notificacao no sistema para a empresa
+        try {
+            String dateStr = dto.getScheduledTime().toLocalDate().toString();
+            String timeStr = dto.getScheduledTime().toLocalTime().toString();
+            String message = String.format("Novo agendamento: %s em %s às %s", customer.getName(), dateStr, timeStr);
+            
+            Notification notification = Notification.builder()
+                    .companyId(company.getId())
+                    .message(message)
+                    .build();
+            notificationRepository.save(notification);
+        } catch (Exception e) {
+            System.err.println("Falha ao salvar notificacao: " + e.getMessage());
         }
 
         return appointment;

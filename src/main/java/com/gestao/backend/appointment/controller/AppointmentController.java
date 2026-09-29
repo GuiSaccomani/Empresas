@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
-import com.gestao.backend.booking.service.AppointmentReminderService;
 
 
 @RestController
@@ -26,7 +25,6 @@ public class AppointmentController {
 
 
     private final AppointmentService appointmentService;
-    private final AppointmentReminderService reminderService;
 
 
     @GetMapping
@@ -58,11 +56,6 @@ public class AppointmentController {
         return ResponseEntity.ok(appointmentService.updateStatus(id, dto));
     }
 
-    @PostMapping("/{id}/send-reminder")
-    public ResponseEntity<Void> sendReminder(@PathVariable UUID id) {
-        reminderService.sendManualReminder(id);
-        return ResponseEntity.ok().build();
-    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable UUID id) {

@@ -22,13 +22,25 @@ public class CustomUserDetails implements UserDetails {
     
     @Getter
     private final Role role;
+    
+    @Getter
+    private final boolean usaAgenda;
+    
+    @Getter
+    private final boolean usaFinanceiro;
+    
+    @Getter
+    private final boolean usaClientes;
 
-    public CustomUserDetails(UUID id, String email, String password, UUID companyId, Role role) {
+    public CustomUserDetails(UUID id, String email, String password, UUID companyId, Role role, boolean usaAgenda, boolean usaFinanceiro, boolean usaClientes) {
         this.id = id;
         this.email = email;
         this.password = password;
         this.companyId = companyId;
         this.role = role;
+        this.usaAgenda = usaAgenda;
+        this.usaFinanceiro = usaFinanceiro;
+        this.usaClientes = usaClientes;
     }
 
     @Override
